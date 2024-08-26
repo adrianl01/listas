@@ -4,7 +4,6 @@ import { airtableBase } from "../../../lib/airtable";
 import { productIndex } from "../../../lib/algolia";
 
 export default function (req: NextApiRequest, res: NextApiResponse) {
-    const { offset, limit } = getOffsetAndLimitFromReq(req, 100, 1000)
     airtableBase('Furniture').select({
         pageSize: 10
     }).eachPage(

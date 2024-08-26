@@ -4,17 +4,20 @@ import { airtableBase } from "../../../lib/airtable";
 import { productIndex } from "../../../lib/algolia";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
-    const { offset } = req.query;
-    const { limit } = req.query;
-    console.log("offset:", offset)
-    console.log("limit:", limit)
-    const strngOffset = JSON.parse(offset as string)
-    const strngLimit = JSON.parse(limit as string)
-    const results = await productIndex.search(req.query.search as string, { offset: strngOffset, length: strngLimit })
+    const { offset, limit } = getOffsetAndLimitFromReq(req)
 
+
+    const results = await productIndex.search(req.query.search as string, {
+        offset: offset, length: limit
+    })
+
+    results.hits.map(h => {
+        const result = h._highlightResult as any
+        console.log(result.Name)
+    })
     res.send(
         {
-            results,
+            results: results.hits,
             pagination: {
                 offset: offset,
                 limit: limit,
